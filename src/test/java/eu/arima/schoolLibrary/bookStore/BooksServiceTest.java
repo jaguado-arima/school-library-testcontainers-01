@@ -1,5 +1,6 @@
 package eu.arima.schoolLibrary.bookStore;
 
+import eu.arima.schoolLibrary.PostgresContainerBaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,8 @@ import javax.transaction.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Testcontainers
 @Transactional
-class BooksServiceTest {
-
-    @Container
-    private final static PostgreSQLContainer postgresContainer = new PostgreSQLContainer(DockerImageName
-            .parse("postgres:13"));
+class BooksServiceTest extends PostgresContainerBaseTest {
 
     @Autowired
     private BooksService booksService;
@@ -30,13 +26,6 @@ class BooksServiceTest {
     private BooksRepository booksRepository;
     @Autowired
     private CopiesRepository copiesRepository;
-
-    @DynamicPropertySource
-    static void databaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgresContainer::getUsername);
-        registry.add("spring.datasource.password", postgresContainer::getPassword);
-    }
 
     @Test
     @DisplayName("addCopy for a book that exists with the provided isbn adds a new copy to it")
